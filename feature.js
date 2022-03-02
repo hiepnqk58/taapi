@@ -53,6 +53,6 @@ const feature = () => {
 };
 
 feature();
-const job = schedule.scheduleJob("*/15 * * * *    ", function () {
+const job = schedule.scheduleJob("*/15 * * * *", function () {
   feature();
 });

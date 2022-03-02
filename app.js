@@ -27,16 +27,16 @@ let newData = {};
 const checkStochRSI = () => {
   if (oldData.valueFastK) {
     if (
-      newData.valueFastK < newData.valueFastD &&
-      oldData.valueFastK >= oldData.valueFastD &&
-      oldData.valueFastD < 40
+      Number(newData.valueFastK) < Number(newData.valueFastD) &&
+      Number(oldData.valueFastK) >= Number(oldData.valueFastD) &&
+      Number(oldData.valueFastD) < 40
     ) {
       sendMessTele("StockRSI_4h cross_up -- BUY");
     }
     if (
-      newData.valueFastK > newData.valueFastD &&
-      oldData.valueFastK > 80 &&
-      newData.valueFastK < 80
+      Number(newData.valueFastK) > Number(newData.valueFastD) &&
+      Number(oldData.valueFastK) > 80 &&
+      Number(newData.valueFastK) < 80
     ) {
       sendMessTele("StockRSI_4h cross_down level 80  -- SELL");
     }
@@ -45,13 +45,20 @@ const checkStochRSI = () => {
 
 const checkDMI = () => {
   if (oldData.plusdi) {
-    if (newData.plusdi > newData.minusdi && oldData.minusdi >= oldData.plusdi) {
+    if (
+      Number(newData.plusdi) > Number(newData.minusdi) &&
+      Number(oldData.minusdi) >= Number(oldData.plusdi)
+    ) {
       sendMessTele("DMI_4h cross_up -- BUY");
     }
-    if (newData.plusdi <= newData.minusdi && oldData.minusdi < oldData.plusdi) {
+    if (
+      Number(newData.plusdi) <= Number(newData.minusdi) &&
+      Number(newData.plusdi) <= Number(newData.minusdi)
+    ) {
+      console.log(123123);
       sendMessTele("DMI_4h cross_down -- SELL");
     }
-    if (newData.adx < oldData.adx && oldData.adx > 50) {
+    if (Number(newData.adx) < Number(oldData.adx) && Number(oldData.adx) > 50) {
       sendMessTele("ADX_4h down -- SELL");
     }
   }
@@ -69,7 +76,6 @@ const scanTAAPI = () => {
         for (let i = 2; i < 4; i++) {
           oldData = { ...oldData, ...result[i].result };
         }
-        console.log(newData, oldData);
         checkStochRSI();
         checkDMI();
       }
@@ -81,7 +87,7 @@ const scanTAAPI = () => {
 
 sendMessTele("start filter BTC 4h");
 scanTAAPI();
-const job = schedule.scheduleJob("*/30 * * * * *", function () {
+const job = schedule.scheduleJob("*/30 * * * *", function () {
   scanTAAPI();
 });
 // setInterval(scanTAAPI,60000*20)
